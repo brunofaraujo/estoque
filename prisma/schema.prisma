@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  username String @unique
+  email   String   @unique
+  name    String @db.VarChar(255)
+  password String @db.VarChar(255)
+  moves Move[]
+}
+
+model Employee {
+  id     Int     @id @default(autoincrement())
+  name    String @unique
+  register String @unique
+  department String @db.VarChar(255)
+  moves Move[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  description   String?
+  serial String?
+  expiration DateTime?
+  batch String?
+  volume Volume @relation(fields: [volumeId], references: [id])
+  volumeId Int
+  brand Brand @relation(fields: [brandId], references: [id])
+  brandId  Int
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  supply Supply @relation(fields: [supplyId], references: [id])
+  supplyId Int @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Brand {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  items Item[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  items Item[]
+}
+
+model Volume {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  items Item[]
+}
+
+model Supply {
+  id Int @id @default(autoincrement())
+  current Int
+  item Item?
+  history Move[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Move {
+  id Int @id @default(autoincrement())
+  type String @db.Char(1)
+  amount Int
+  supply Supply @relation(fields: [supplyId], references: [id])
+  supplyId Int
+  requester Employee? @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
