@@ -8,16 +8,16 @@ export class UsersService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return await this.prisma.user.create({
-      data: {
-        username: createUserDto.username,
-        email: createUserDto.email,
-        name: createUserDto.name,
-        password: createUserDto.password
-      }
-    });
-  }
+  // async create(createUserDto: CreateUserDto) {
+  //   return await this.prisma.user.create({
+  //     data: {
+  //       username: createUserDto.username,
+  //       email: createUserDto.email,
+  //       name: createUserDto.name,
+  //       password: createUserDto.password
+  //     }
+  //   });
+  // }
 
   async findAll() {
     return this.prisma.user.findMany();
@@ -39,10 +39,12 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    return await `This action updates a #${id} user`;
+    return await this.prisma.user.update({data: updateUserDto, where: {id}});
   }
 
-  async remove(id: number) {
-    return await `This action removes a #${id} user`;
-  }
+
+  // async remove(id: number) {
+  //   return await `This action removes a #${id} user`;
+  // }
+  
 }
