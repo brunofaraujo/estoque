@@ -1,21 +1,43 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthRecoverDto } from './dto/auth-recover.dto';
 import { AuthResetPasswordDto } from './dto/auth-reset.dto';
 import { User } from '@prisma/client';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcrypt';
+import { AuthLoginDto } from './dto/auth-login.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly prisma: PrismaService
+        private readonly prisma: PrismaService,
+        private readonly userService: UsersService
         ) {}
 
+
+    async validateUser(username: string, password: string) {        
+        try {
+            const user = await this.userService.findByUsername(username);
+            if (user && await bcrypt.compare(password, user.password)) {
+                return user;    
+            }            
+            
+        } catch (error) {
+            throw new UnauthorizedException(error)
+        }
+    }
+
+    async login(authLoginDto: AuthLoginDto) {
+        const { username } = authLoginDto;
+        const user = await this.userService.findByUsername(username)
+        return this.generateTokenLogin(user)
+    }
+
     async generateTokenLogin(user: User) {
-        return {accessToken: await this.jwtService.sign({
+        return {accessToken: this.jwtService.sign({
             id: user.id,
             username: user.username,
             name: user.name,
@@ -38,34 +60,6 @@ export class AuthService {
         }
     }
 
-    // async validateUser(username: string,  password: string) {
-    //     const user = await this.usersService.findOne(null, username);
-    //     if (user && user.password === password) {
-    //         const {password, ...result} = user; // Separates password information from remaining data
-    //         return result;
-    //     }
-    //     return null;
-    // }
-
-    async login(authLoginDto: AuthLoginDto) {
-
-        try {
-            const user = await this.prisma.user.findFirstOrThrow({
-                where: {
-                    username: authLoginDto.username,
-                    password: authLoginDto.password
-                }
-            })  
-            return this.generateTokenLogin(user)  
-        } catch (error) {
-            throw new UnauthorizedException(error)
-        }
-        
-        // const payload = { username: user.username, sub: user.userId};
-        // return {
-        //     access_token: await this.jwtService.signAsync(payload, { secret: process.env.JWT_SECRET })
-        // }
-    }
 
     async recover(authRecoverDto: AuthRecoverDto) {
 
@@ -95,8 +89,14 @@ export class AuthService {
 
     }
 
+    hashPassword(password: string) {
+        return bcrypt.hash(password, 10); // 10 rounds as default
+    }
+
     async register(registerUserDto: CreateUserDto) {
         try {
+
+            registerUserDto.password = await this.hashPassword(registerUserDto.password)
 
             const user = await this.prisma.user.create({
                 data: registerUserDto

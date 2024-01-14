@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Headers, Post, Request, UseGuards } from "@nestjs/common";
-import { AuthLoginDto } from "./dto/auth-login.dto";
+import { Body, Controller, Get, Post, Request, UseGuards } from "@nestjs/common";
 import { AuthRecoverDto } from "./dto/auth-recover.dto";
 import { AuthSignUpDto } from "./dto/auth-create.dto";
 import { AuthResetPasswordDto } from "./dto/auth-reset.dto";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./local-auth.guard";
 import { JwtAuthGuard } from "./jwt-auth.guard";
+import { AuthLoginDto } from "./dto/auth-login.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +16,8 @@ export class AuthController {
 @Post('login')
 async login(@Body() body: AuthLoginDto) {
     return await this.authService.login(body);
-}
+  }
+  
 
 @Post('signup')
 async signup(@Body() body: AuthSignUpDto) {
@@ -36,7 +37,6 @@ async resetPassword(@Body() body: AuthResetPasswordDto) {
 @UseGuards(JwtAuthGuard)
 @Post('me')
 async postMe(@Request() req) {
-   // console.log(req);
     return req.user;
 }
 
