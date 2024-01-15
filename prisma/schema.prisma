@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  seed = "prisma/seed.ts"
 }
 
 datasource db {
@@ -45,8 +46,9 @@ model Item {
   brandId  Int
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
-  supply Supply @relation(fields: [supplyId], references: [id])
+  supply Supply @relation(fields: [supplyId], references: [id], onDelete: Cascade)
   supplyId Int @unique
+  deleted Boolean @db.Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -76,6 +78,7 @@ model Supply {
   current Int
   item Item?
   history Move[]
+  deleted Boolean @db.Boolean() @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
