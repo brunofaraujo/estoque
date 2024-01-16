@@ -3,6 +3,7 @@ import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateMoveDto } from './dto/create-move.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('items')
@@ -17,6 +18,11 @@ export class ItemsController {
   @Get()
   findAll() {
     return this.itemsService.findAll();
+  }
+
+  @Post('move')
+  createMove(@Body() createMoveDto: CreateMoveDto) {
+    return this.itemsService.createMove(createMoveDto);
   }
 
   @Get(':id')

@@ -38,6 +38,7 @@ model Item {
   title     String   @db.VarChar(255)
   description   String?
   serial String?
+  register String?
   expiration DateTime?
   batch String?
   volume Volume @relation(fields: [volumeId], references: [id])
@@ -90,7 +91,7 @@ model Move {
   supply Supply @relation(fields: [supplyId], references: [id])
   supplyId Int
   requester Employee? @relation(fields: [employeeId], references: [id])
-  employeeId Int
+  employeeId Int?
   user User @relation(fields: [userId], references: [id])
   userId Int
   createdAt DateTime @default(now())

@@ -102,7 +102,37 @@ async function seed() {
 
     const brand5 = await prisma.brand.create({
         data: {
+            name: 'Motorola'
+        }
+    })
+    const brand6 = await prisma.brand.create({
+        data: {
+            name: 'Apple'
+        }
+    })
+    const brand7 = await prisma.brand.create({
+        data: {
+            name: 'Logitech'
+        }
+    })
+    const brand8 = await prisma.brand.create({
+        data: {
+            name: 'Compactor'
+        }
+    })
+    const brand9 = await prisma.brand.create({
+        data: {
             name: 'BIC'
+        }
+    })
+    const brand10 = await prisma.brand.create({
+        data: {
+            name: 'Lenovo'
+        }
+    })
+    const brand11 = await prisma.brand.create({
+        data: {
+            name: 'Genérico'
         }
     })
 
@@ -129,20 +159,49 @@ async function seed() {
             name: "Limpeza"
         }
     })
-
     const category5 = await prisma.category.create({
         data: {
             name: "Expediente"
         }
     })
 
+
     const item1 = await prisma.item.create({
         data: {
             title: "Caneta esferográfica",
-            description: "Edição especial",
+            description: "Cor Azul",
+            register: "3170041580",
             brand: {
                 connect: {
+                    id: 9
+                }
+            },
+            volume: {
+                connect: {
+                    id: 1
+                }
+            },
+            category: {
+                connect: {
                     id: 5
+                }
+            },
+            supply: {
+                create: {
+                    current: 150
+                }
+            }
+        }
+    })
+
+    const item2 = await prisma.item.create({
+        data: {
+            title: "Caneta esferográfica",
+            description: "Cor Vermelha",
+            register: "3170041581",
+            brand: {
+                connect: {
+                    id: 9
                 }
             },
             volume: {
@@ -157,14 +216,95 @@ async function seed() {
             },
             supply: {
                 create: {
-                    current: 5
+                    current: 10
                 }
             }
         }
     })
 
+    const item3 = await prisma.item.create({
+        data: {
+            title: "Notebook Core i7",
+            description: "Cinza",
+            register: "3170041588",
+            brand: {
+                connect: {
+                    id: 1
+                }
+            },
+            volume: {
+                connect: {
+                    id: 3
+                }
+            },
+            category: {
+                connect: {
+                    id: 1
+                }
+            },
+            supply: {
+                create: {
+                    current: 10
+                }
+            }
+        }
+    })
 
+    const item4 = await prisma.item.create({
+        data: {
+            title: "Mousepad",
+            description: "Personalizado SESI 2024",
+            register: "3170041570",
+            brand: {
+                connect: {
+                    id: 3
+                }
+            },
+            volume: {
+                connect: {
+                    id: 2
+                }
+            },
+            category: {
+                connect: {
+                    id: 4
+                }
+            },
+            supply: {
+                create: {
+                    current: 50
+                }
+            }
+        }
+    })
 
+    const item5 = await prisma.item.create({
+        data: {
+            title: "Água sanitária",
+            description: "5 litros",
+            register: "3170041522",
+            brand: {
+                connect: {
+                    id: 3
+                }
+            },
+            volume: {
+                connect: {
+                    id: 2
+                }
+            },
+            category: {
+                connect: {
+                    id: 1
+                }
+            },
+            supply: {
+                create: {
+                    current: 30
+                }
+            }
+        }
+    })
 }
 
 seed()
