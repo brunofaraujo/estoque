@@ -5,47 +5,40 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CategoriesService {
-
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
-
     try {
-      return await this.prisma.category.create({data: createCategoryDto})
-      
+      return await this.prisma.category.create({ data: createCategoryDto });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
-
   }
 
   async findAll() {
-
     return await this.prisma.category.findMany();
   }
 
   async findOne(id: number) {
-
-    return await this.prisma.category.findUnique({where: {id}})
+    return await this.prisma.category.findUnique({ where: { id } });
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-
     try {
-      
-      return await this.prisma.category.update({data: updateCategoryDto, where: {id}})
+      return await this.prisma.category.update({
+        data: updateCategoryDto,
+        where: { id },
+      });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
   }
 
   async remove(id: number) {
-
     try {
-      
-      return await this.prisma.category.delete({where: {id}})
+      return await this.prisma.category.delete({ where: { id } });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
   }
 }

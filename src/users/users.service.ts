@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
@@ -15,26 +14,27 @@ export class UsersService {
   async findByUsername(username: string) {
     return this.prisma.user.findFirst({
       where: {
-        username
-      }
-    })
+        username,
+      },
+    });
   }
 
   async findById(id: number) {
     return this.prisma.user.findUnique({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-
     if (updateUserDto.password) {
-      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10)
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
-    return await this.prisma.user.update({data: updateUserDto, where: {id}});
+    return await this.prisma.user.update({
+      data: updateUserDto,
+      where: { id },
+    });
   }
-  
 }

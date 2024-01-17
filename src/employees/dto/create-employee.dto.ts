@@ -1,14 +1,12 @@
-import { IsNumberString, IsString } from "class-validator";
+import { IsNumberString, IsString } from 'class-validator';
 
 export class CreateEmployeeDto {
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string;
+  @IsNumberString()
+  register: string;
 
-    @IsNumberString()
-    register: string;
-
-    @IsString()
-    department: string;
-
+  @IsString()
+  department: string;
 }

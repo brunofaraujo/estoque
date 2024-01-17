@@ -11,7 +11,16 @@ import { VolumesModule } from './volumes/volumes.module';
 import { ItemsModule } from './items/items.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal: true}), UsersModule, AuthModule, BrandsModule, CategoriesModule, EmployeesModule, VolumesModule, ItemsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    UsersModule,
+    AuthModule,
+    BrandsModule,
+    CategoriesModule,
+    EmployeesModule,
+    VolumesModule,
+    ItemsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

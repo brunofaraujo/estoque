@@ -5,17 +5,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class EmployeesService {
-
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
-
     try {
       return await this.prisma.employee.create({
-        data: createEmployeeDto
-      })
+        data: createEmployeeDto,
+      });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
   }
 
@@ -24,23 +22,25 @@ export class EmployeesService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.employee.findUnique({where: {id}})
+    return await this.prisma.employee.findUnique({ where: { id } });
   }
 
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-
     try {
-      return await this.prisma.employee.update({data: updateEmployeeDto, where: {id}})
+      return await this.prisma.employee.update({
+        data: updateEmployeeDto,
+        where: { id },
+      });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
   }
 
   async remove(id: number) {
     try {
-      return await this.prisma.employee.delete({where: {id}})
+      return await this.prisma.employee.delete({ where: { id } });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
   }
 }

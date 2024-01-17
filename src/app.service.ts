@@ -7,6 +7,6 @@ export class AppService {
   }
 
   postHello(): string {
-    return 'Hello World [from POST]'
+    return 'Hello World [from POST]';
   }
 }

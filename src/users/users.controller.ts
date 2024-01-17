@@ -15,7 +15,7 @@ export class UsersController {
 
   @Get('profile')
   async profile() {
-    return 'You are viewing a user profile page'
+    return 'You are viewing a user profile page';
   }
 
   @Get(':id')
@@ -28,10 +28,8 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
-
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.usersService.remove(+id);
   // }
-
 }
