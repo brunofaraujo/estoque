@@ -18,7 +18,7 @@ export class EmployeesService {
   }
 
   async findAll() {
-    return await this.prisma.employee.findMany();
+    return await this.prisma.employee.findMany({orderBy: {name: 'asc'}});
   }
 
   async findOne(id: number) {

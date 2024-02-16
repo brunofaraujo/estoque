@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -32,18 +36,25 @@ export class ItemsService {
 
   async findAll() {
     return await this.prisma.item.findMany({
+      where: {
+        deleted: false,
+        supply: { deleted: false },
+      },
       include: {
         volume: true,
         brand: true,
         category: true,
         supply: true,
       },
+      orderBy: {
+        title: 'asc'
+      },
     });
   }
 
   async findOne(id: number) {
     return this.prisma.item.findUnique({
-      where: { id },
+      where: { id, deleted: false },
       include: {
         volume: true,
         brand: true,
@@ -57,12 +68,12 @@ export class ItemsService {
     try {
       if (updateItemDto.expiration) {
         updateItemDto.expiration = new Date(updateItemDto.expiration);
-        return this.prisma.item.update({
+        return await this.prisma.item.update({
           where: { id },
           data: updateItemDto,
         });
       }
-      return this.prisma.item.update({
+      return await this.prisma.item.update({
         where: { id },
         data: updateItemDto,
       });
@@ -73,20 +84,31 @@ export class ItemsService {
 
   async remove(id: number) {
     try {
-      return this.prisma.item.update({
-        where: { id },
-        data: {
-          deleted: true,
-          supply: {
-            update: {
-              deleted: true,
+      if (
+        (await this.prisma.item.count({
+          where: {
+            id,
+            deleted: true,
+          },
+        })) > 0
+      ) {
+        throw new UnprocessableEntityException();
+      } else {
+        return await this.prisma.item.update({
+          where: { id },
+          data: {
+            deleted: true,
+            supply: {
+              update: {
+                deleted: true,
+              },
             },
           },
-        },
-        include: {
-          supply: true,
-        },
-      });
+          include: {
+            supply: true,
+          },
+        });
+      }
     } catch (e) {
       throw new BadRequestException(e);
     }

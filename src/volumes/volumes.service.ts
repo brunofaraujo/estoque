@@ -16,7 +16,7 @@ export class VolumesService {
   }
 
   async findAll() {
-    return await this.prisma.volume.findMany();
+    return await this.prisma.volume.findMany({ orderBy: { name: 'asc' } });
   }
 
   async findOne(id: number) {

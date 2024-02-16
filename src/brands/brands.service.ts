@@ -18,7 +18,7 @@ export class BrandsService {
   }
 
   async findAll() {
-    return await this.prisma.brand.findMany();
+    return await this.prisma.brand.findMany({orderBy: {name: 'asc'}});
   }
 
   async findOne(id: number) {
