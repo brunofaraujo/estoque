@@ -47,7 +47,7 @@ export class ItemsService {
         supply: true,
       },
       orderBy: {
-        title: 'asc'
+        title: 'asc',
       },
     });
   }
