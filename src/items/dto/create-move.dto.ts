@@ -29,4 +29,7 @@ export class CreateMoveDto {
 
   @IsInt()
   userId: number;
+
+  @IsOptional()
+  description: string;
 }

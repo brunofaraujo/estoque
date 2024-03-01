@@ -18,12 +18,15 @@ export class BrandsService {
   }
 
   async findAll() {
-    return await this.prisma.brand.findMany({orderBy: {name: 'asc'}});
+    return await this.prisma.brand.findMany({
+      where: { deleted: false },
+      orderBy: { name: 'asc' },
+    });
   }
 
   async findOne(id: number) {
     return await this.prisma.brand.findUnique({
-      where: { id },
+      where: { id, deleted: false },
     });
   }
 
@@ -31,7 +34,7 @@ export class BrandsService {
     try {
       return await this.prisma.brand.update({
         data: updateBrandDto,
-        where: { id },
+        where: { id, deleted: false },
       });
     } catch (e) {
       throw new BadRequestException(e);
@@ -40,6 +43,18 @@ export class BrandsService {
 
   async remove(id: number) {
     try {
+      if (
+        (await this.prisma.item.count({
+          where: {
+            brand: { id },
+          },
+        })) > 0
+      ) {
+        return await this.prisma.brand.update({
+          where: { id },
+          data: { deleted: true },
+        });
+      }
       return await this.prisma.brand.delete({ where: { id } });
     } catch (e) {
       throw new BadRequestException(e);

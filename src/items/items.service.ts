@@ -38,7 +38,6 @@ export class ItemsService {
     return await this.prisma.item.findMany({
       where: {
         deleted: false,
-        supply: { deleted: false },
       },
       include: {
         volume: true,
@@ -69,12 +68,12 @@ export class ItemsService {
       if (updateItemDto.expiration) {
         updateItemDto.expiration = new Date(updateItemDto.expiration);
         return await this.prisma.item.update({
-          where: { id },
+          where: { id, deleted: false },
           data: updateItemDto,
         });
       }
       return await this.prisma.item.update({
-        where: { id },
+        where: { id, deleted: false },
         data: updateItemDto,
       });
     } catch (e) {
@@ -84,18 +83,8 @@ export class ItemsService {
 
   async remove(id: number) {
     try {
-      if (
-        (await this.prisma.item.count({
-          where: {
-            id,
-            deleted: true,
-          },
-        })) > 0
-      ) {
-        throw new UnprocessableEntityException();
-      } else {
         return await this.prisma.item.update({
-          where: { id },
+          where: { id, deleted: false },
           data: {
             deleted: true,
             supply: {
@@ -108,7 +97,6 @@ export class ItemsService {
             supply: true,
           },
         });
-      }
     } catch (e) {
       throw new BadRequestException(e);
     }

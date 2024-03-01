@@ -16,18 +16,23 @@ export class VolumesService {
   }
 
   async findAll() {
-    return await this.prisma.volume.findMany({ orderBy: { name: 'asc' } });
+    return await this.prisma.volume.findMany({
+      where: { deleted: false },
+      orderBy: { name: 'asc' },
+    });
   }
 
   async findOne(id: number) {
-    return await this.prisma.volume.findUnique({ where: { id } });
+    return await this.prisma.volume.findUnique({
+      where: { id, deleted: false },
+    });
   }
 
   async update(id: number, updateVolumeDto: UpdateVolumeDto) {
     try {
       return await this.prisma.volume.update({
         data: updateVolumeDto,
-        where: { id },
+        where: { id, deleted: false },
       });
     } catch (e) {
       throw new BadRequestException(e);
@@ -36,6 +41,18 @@ export class VolumesService {
 
   async remove(id: number) {
     try {
+      if (
+        (await this.prisma.item.count({
+          where: {
+            volume: { id },
+          },
+        })) > 0
+      ) {
+        return await this.prisma.volume.update({
+          where: { id },
+          data: { deleted: true },
+        });
+      }
       return await this.prisma.volume.delete({ where: { id } });
     } catch (e) {
       throw new BadRequestException(e);

@@ -16,18 +16,23 @@ export class CategoriesService {
   }
 
   async findAll() {
-    return await this.prisma.category.findMany({orderBy: {name: 'asc'}});
+    return await this.prisma.category.findMany({
+      where: { deleted: false },
+      orderBy: { name: 'asc' },
+    });
   }
 
   async findOne(id: number) {
-    return await this.prisma.category.findUnique({ where: { id } });
+    return await this.prisma.category.findUnique({
+      where: { id, deleted: false },
+    });
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     try {
       return await this.prisma.category.update({
         data: updateCategoryDto,
-        where: { id },
+        where: { id, deleted: false },
       });
     } catch (e) {
       throw new BadRequestException(e);
@@ -36,6 +41,18 @@ export class CategoriesService {
 
   async remove(id: number) {
     try {
+      if (
+        (await this.prisma.item.count({
+          where: {
+            category: { id },
+          },
+        })) > 0
+      ) {
+        return await this.prisma.category.update({
+          where: { id },
+          data: { deleted: true },
+        });
+      }
       return await this.prisma.category.delete({ where: { id } });
     } catch (e) {
       throw new BadRequestException(e);
