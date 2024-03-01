@@ -83,20 +83,20 @@ export class ItemsService {
 
   async remove(id: number) {
     try {
-        return await this.prisma.item.update({
-          where: { id, deleted: false },
-          data: {
-            deleted: true,
-            supply: {
-              update: {
-                deleted: true,
-              },
+      return await this.prisma.item.update({
+        where: { id, deleted: false },
+        data: {
+          deleted: true,
+          supply: {
+            update: {
+              deleted: true,
             },
           },
-          include: {
-            supply: true,
-          },
-        });
+        },
+        include: {
+          supply: true,
+        },
+      });
     } catch (e) {
       throw new BadRequestException(e);
     }
@@ -146,6 +146,7 @@ export class ItemsService {
               amount: createMoveDto.amount,
               user: { connect: { id: createMoveDto.userId } },
               supply: { connect: { id: createMoveDto.supplyId } },
+              description: createMoveDto.description,
             },
             include: { supply: true },
           });
@@ -163,6 +164,7 @@ export class ItemsService {
               requester: { connect: { id: createMoveDto.requesterId } },
               user: { connect: { id: createMoveDto.userId } },
               supply: { connect: { id: createMoveDto.supplyId } },
+              description: createMoveDto.description,
             },
             include: { supply: true },
           });
