@@ -1,4 +1,13 @@
-import { Controller, Get, Body, Patch, Param, UseGuards, Post, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  Post,
+  Delete,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -17,8 +26,8 @@ export class UsersController {
 
   @Get()
   async findAll() {
-    const users = await this.usersService.findAll()
-    return users.map((user) => new UserEntity(user))
+    const users = await this.usersService.findAll();
+    return users.map((user) => new UserEntity(user));
   }
 
   @Get('profile')
@@ -28,14 +37,14 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findById(+id)
+    const user = await this.usersService.findById(+id);
     return new UserEntity(user);
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.usersService.update(+id, updateUserDto)
-    return new UserEntity(user)
+    const user = await this.usersService.update(+id, updateUserDto);
+    return new UserEntity(user);
   }
 
   @Delete(':id')

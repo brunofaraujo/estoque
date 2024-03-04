@@ -21,7 +21,7 @@ export class UsersService {
         return (
           (await this.prisma.user.update({
             where: { username: createUserDto.username },
-            data: {...createUserDto, password: hashedPassword},
+            data: { ...createUserDto, password: hashedPassword },
           })) &&
           this.prisma.user.update({
             where: { username: createUserDto.username },
