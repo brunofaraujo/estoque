@@ -34,6 +34,11 @@ export class ItemsController {
     return this.itemsService.createMove(createMoveDto);
   }
 
+  @Get('moves')
+  findAllItemsWithMoves() {
+    return this.itemsService.findAllWithMoves();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.itemsService.findOne(+id);

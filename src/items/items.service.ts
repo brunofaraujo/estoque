@@ -10,7 +10,7 @@ export class ItemsService {
 
   async create(createItemDto: CreateItemDto) {
     try {
-      return await this.prisma.item.create({
+      const item = await this.prisma.item.create({
         data: {
           title: createItemDto.title,
           description: createItemDto.description,
@@ -22,9 +22,20 @@ export class ItemsService {
           volume: { connect: { id: createItemDto.volumeId } },
           brand: { connect: { id: createItemDto.brandId } },
           category: { connect: { id: createItemDto.categoryId } },
-          supply: { create: { current: createItemDto.amount } },
+          supply: { create: { current: 0 } },
         },
       });
+
+      if (item)
+        return await this.createMove({
+          itemId: item.id,
+          supplyId: item.supplyId,
+          type: 'I',
+          amount: createItemDto.amount,
+          requesterId: null,
+          userId: createItemDto.userId,
+          description: 'Cadastro inicial',
+        });
     } catch (e) {
       throw new BadRequestException(e);
     }
@@ -43,6 +54,37 @@ export class ItemsService {
       },
       orderBy: {
         title: 'asc',
+      },
+    });
+  }
+
+  async findAllWithMoves() {
+    return await this.prisma.item.findMany({
+      where: {
+        supply: {
+          history: { some: {} },
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        volume: true,
+        brand: true,
+        category: true,
+        supply: {
+          select: {
+            history: {
+              select: {
+                type: true,
+                amount: true,
+                description: true,
+                requester: true,
+                user: { select: { name: true } },
+                createdAt: true,
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -115,7 +157,6 @@ export class ItemsService {
   }
 
   async createMove(createMoveDto: CreateMoveDto) {
-    //Now receiving the supplyId (Maybe check by ItemId)
     try {
       if (
         await this.isValidOperation(

@@ -10,6 +10,8 @@ import { EmployeesModule } from './employees/employees.module';
 import { VolumesModule } from './volumes/volumes.module';
 import { ItemsModule } from './items/items.module';
 import { SummaryModule } from './summary/summary.module';
+import { MovesModule } from './moves/moves.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { SummaryModule } from './summary/summary.module';
     VolumesModule,
     ItemsModule,
     SummaryModule,
+    MovesModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

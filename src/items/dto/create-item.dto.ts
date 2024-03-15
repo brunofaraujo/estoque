@@ -28,4 +28,7 @@ export class CreateItemDto {
 
   @IsInt()
   amount: number;
+
+  @IsInt()
+  userId: number;
 }
