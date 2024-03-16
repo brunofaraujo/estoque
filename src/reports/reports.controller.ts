@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CategoryReportDto } from './dto/category-report.dto';
 
