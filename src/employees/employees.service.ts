@@ -10,21 +10,26 @@ export class EmployeesService {
 
   async create(createEmployeeDto: CreateEmployeeDto) {
     try {
-      const deletedEmployee: Employee = await this.prisma.employee.findUnique({
-        where: { register: createEmployeeDto.register, deleted: true },
+      const deletedEmployee: Employee = await this.prisma.employee.findFirst({
+        where: {
+          OR: [
+            { name: createEmployeeDto.name },
+            { register: createEmployeeDto.register },
+          ],
+          AND: [{ deleted: true }],
+        },
       });
 
       if (deletedEmployee) {
-        return (
-          (await this.prisma.employee.update({
-            where: { register: createEmployeeDto.register },
-            data: createEmployeeDto,
-          })) &&
-          this.prisma.employee.update({
-            where: { register: createEmployeeDto.register },
-            data: { deleted: false },
-          })
-        );
+        return await this.prisma.employee.update({
+          where: { id: deletedEmployee.id },
+          data: {
+            name: createEmployeeDto.name,
+            register: createEmployeeDto.register,
+            department: createEmployeeDto.department,
+            deleted: false,
+          },
+        });
       }
 
       return await this.prisma.employee.create({
@@ -35,7 +40,14 @@ export class EmployeesService {
     }
   }
 
-  async findAll() {
+  async findAll(moves: string) {
+    if (moves === 'true') {
+      return await this.prisma.employee.findMany({
+        where: { moves: { some: {} } },
+        orderBy: { name: 'asc' },
+      });
+    }
+
     return await this.prisma.employee.findMany({
       where: { deleted: false },
       orderBy: { name: 'asc' },
@@ -61,13 +73,11 @@ export class EmployeesService {
 
   async remove(id: number) {
     try {
-      if (
-        (await this.prisma.move.count({
-          where: {
-            requester: { id },
-          },
-        })) > 0
-      ) {
+      const hasMoves = await this.prisma.move.count({
+        where: { requester: { id } },
+      });
+
+      if (hasMoves) {
         return await this.prisma.employee.update({
           where: { id },
           data: { deleted: true },

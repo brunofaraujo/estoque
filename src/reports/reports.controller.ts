@@ -3,6 +3,8 @@ import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CategoryReportDto } from './dto/category-report.dto';
+import { EmployeeReportDto } from './dto/employee-report.dto';
+import { ItemReportDto } from './dto/item-report.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('reports')
@@ -28,7 +30,15 @@ export class ReportsController {
     return this.reportsService.getCategories(categoryReport)
   };
 
+  @Post('employee')
+  getEmployee(@Body() employeeReport: EmployeeReportDto) {
+    return this.reportsService.getEmployee(employeeReport)
+  };
 
+  @Post('item')
+  getItem(@Body() itemReport: ItemReportDto) {
+    return this.reportsService.getItem(itemReport)
+  };
 
 
   // @Patch(':id')

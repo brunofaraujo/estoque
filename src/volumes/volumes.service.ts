@@ -9,6 +9,15 @@ export class VolumesService {
 
   async create(createVolumeDto: CreateVolumeDto) {
     try {
+      const deletedVolume = await this.prisma.volume.findFirst({
+        where: { name: createVolumeDto.name, deleted: true },
+      });
+      if (deletedVolume) {
+        return await this.prisma.volume.update({
+          where: { id: deletedVolume.id },
+          data: { deleted: false },
+        });
+      }
       return await this.prisma.volume.create({ data: createVolumeDto });
     } catch (e) {
       throw new BadRequestException(e);
@@ -41,13 +50,10 @@ export class VolumesService {
 
   async remove(id: number) {
     try {
-      if (
-        (await this.prisma.item.count({
-          where: {
-            volume: { id },
-          },
-        })) > 0
-      ) {
+      const hasMoves = await this.prisma.move.count({
+        where: { supply: { item: { volume: { id } } } },
+      });
+      if (hasMoves) {
         return await this.prisma.volume.update({
           where: { id },
           data: { deleted: true },

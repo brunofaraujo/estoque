@@ -44,11 +44,11 @@ async function seed() {
 
   for (let index = 0; index < 50; index++) {
     await prisma.brand.create({
-      data: { name: faker.company.name() },
+      data: { name: faker.helpers.unique(faker.company.name) },
     });
   }
 
-  let departments = [
+  const departments = [
     'Administrativo',
     'Pedagógico',
     'Prestador',

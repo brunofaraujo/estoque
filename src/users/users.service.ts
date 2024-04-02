@@ -13,21 +13,28 @@ export class UsersService {
     try {
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-      const deletedUser: User = await this.prisma.user.findUnique({
-        where: { username: createUserDto.username, deleted: true },
+      const deletedUser: User = await this.prisma.user.findFirst({
+        where: {
+          OR: [
+            { name: createUserDto.name },
+            { email: createUserDto.email },
+            { username: createUserDto.username },
+          ],
+          AND: [{ deleted: true }],
+        },
       });
 
       if (deletedUser) {
-        return (
-          (await this.prisma.user.update({
-            where: { username: createUserDto.username },
-            data: { ...createUserDto, password: hashedPassword },
-          })) &&
-          this.prisma.user.update({
-            where: { username: createUserDto.username },
-            data: { deleted: false },
-          })
-        );
+        return await this.prisma.user.update({
+          where: { id: deletedUser.id },
+          data: {
+            name: createUserDto.name,
+            email: createUserDto.email,
+            username: createUserDto.username,
+            password: hashedPassword,
+            deleted: false,
+          },
+        });
       }
 
       return await this.prisma.user.create({
@@ -79,13 +86,10 @@ export class UsersService {
 
   async remove(id: number) {
     try {
-      if (
-        (await this.prisma.move.count({
-          where: {
-            user: { id },
-          },
-        })) > 0
-      ) {
+      const hasMoves = await this.prisma.move.count({
+        where: { user: { id } },
+      });
+      if (hasMoves) {
         return await this.prisma.user.update({
           where: { id },
           data: { deleted: true },

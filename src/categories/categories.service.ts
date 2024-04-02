@@ -9,6 +9,15 @@ export class CategoriesService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     try {
+      const deletedCategory = await this.prisma.category.findFirst({
+        where: { name: createCategoryDto.name, deleted: true },
+      });
+      if (deletedCategory) {
+        return await this.prisma.category.update({
+          where: { id: deletedCategory.id },
+          data: { deleted: false },
+        });
+      }
       return await this.prisma.category.create({ data: createCategoryDto });
     } catch (e) {
       throw new BadRequestException(e);
@@ -41,13 +50,10 @@ export class CategoriesService {
 
   async remove(id: number) {
     try {
-      if (
-        (await this.prisma.item.count({
-          where: {
-            category: { id },
-          },
-        })) > 0
-      ) {
+      const hasMoves = await this.prisma.move.count({
+        where: { supply: { item: { category: { id } } } },
+      });
+      if (hasMoves) {
         return await this.prisma.category.update({
           where: { id },
           data: { deleted: true },

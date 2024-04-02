@@ -15,6 +15,7 @@ export class ItemsService {
           title: createItemDto.title,
           description: createItemDto.description,
           serial: createItemDto.serial,
+          register: createItemDto.register,
           expiration: createItemDto.expiration
             ? new Date(createItemDto.expiration)
             : null,
@@ -41,7 +42,21 @@ export class ItemsService {
     }
   }
 
-  async findAll() {
+  async findAll(withDeleted: string) {
+    if (withDeleted === 'true') {
+      return await this.prisma.item.findMany({
+        include: {
+          volume: true,
+          brand: true,
+          category: true,
+          supply: true,
+        },
+        orderBy: {
+          title: 'asc',
+        },
+      });
+    }
+
     return await this.prisma.item.findMany({
       where: {
         deleted: false,
@@ -183,6 +198,10 @@ export class ItemsService {
               amount: createMoveDto.amount,
               user: { connect: { id: createMoveDto.userId } },
               supply: { connect: { id: createMoveDto.supplyId } },
+              [createMoveDto.requesterId ? 'requester' : undefined]:
+                createMoveDto.requesterId
+                  ? { connect: { id: createMoveDto.requesterId } }
+                  : undefined,
               description: createMoveDto.description,
             },
             include: { supply: true },
@@ -210,6 +229,17 @@ export class ItemsService {
       throw new BadRequestException('Invalid request');
     } catch (e) {
       throw new BadRequestException(e);
+    }
+  }
+
+  async restoreItem (id: number) {
+    try {
+      return await this.prisma.item.update({
+       where: {id, AND: {deleted: true}},
+       data: {deleted: false, supply: {update: {deleted: false}}}
+      })
+    } catch (e) {
+      throw new BadRequestException(e)
     }
   }
 }

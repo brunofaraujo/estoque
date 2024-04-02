@@ -12,6 +12,7 @@ import { ItemsModule } from './items/items.module';
 import { SummaryModule } from './summary/summary.module';
 import { MovesModule } from './moves/moves.module';
 import { ReportsModule } from './reports/reports.module';
+import { RequestsModule } from './requests/requests.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ReportsModule } from './reports/reports.module';
     SummaryModule,
     MovesModule,
     ReportsModule,
+    RequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

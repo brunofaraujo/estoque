@@ -17,6 +17,9 @@ export class CreateItemDto {
   @IsOptional()
   batch: string;
 
+  @IsOptional()
+  register: string;
+
   @IsInt()
   volumeId: number;
 

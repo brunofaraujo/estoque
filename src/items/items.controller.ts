@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -25,8 +26,13 @@ export class ItemsController {
   }
 
   @Get()
-  findAll() {
-    return this.itemsService.findAll();
+  findAll(@Query('includeDeleted') withDeleted?: string) {
+    return this.itemsService.findAll(withDeleted);
+  }
+
+  @Post('restore')
+  restoreItem(@Body("itemId") id: number) {
+    return this.itemsService.restoreItem(id);
   }
 
   @Post('move')

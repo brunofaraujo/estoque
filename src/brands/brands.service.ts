@@ -9,6 +9,15 @@ export class BrandsService {
 
   async create(createBrandDto: CreateBrandDto) {
     try {
+      const deletedBrand = await this.prisma.brand.findFirst({
+        where: { name: createBrandDto.name, deleted: true },
+      });
+      if (deletedBrand) {
+        return await this.prisma.brand.update({
+          where: { id: deletedBrand.id },
+          data: { deleted: false },
+        });
+      }
       return await this.prisma.brand.create({
         data: createBrandDto,
       });
@@ -43,13 +52,11 @@ export class BrandsService {
 
   async remove(id: number) {
     try {
-      if (
-        (await this.prisma.item.count({
-          where: {
-            brand: { id },
-          },
-        })) > 0
-      ) {
+      const hasMoves = await this.prisma.move.count({
+        where: { supply: { item: { brand: { id } } } },
+      });
+
+      if (hasMoves) {
         return await this.prisma.brand.update({
           where: { id },
           data: { deleted: true },
