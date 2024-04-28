@@ -63,6 +63,7 @@ async function seed() {
         name: faker.helpers.unique(faker.person.fullName),
         register: faker.string.numeric(5),
         department: departments[Math.floor(Math.random() * 6)],
+        email: faker.helpers.unique(faker.internet.email),
       },
     });
   }

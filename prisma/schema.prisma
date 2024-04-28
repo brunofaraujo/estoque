@@ -29,6 +29,7 @@ model Employee {
   name       String    @unique
   register   String    @unique
   department String    @db.VarChar(255)
+  email     String    @unique
   moves      Move[]
   deleted    Boolean   @default(false) @db.Boolean()
   requests   Request[]
@@ -118,6 +119,7 @@ model Request {
   status         String          @db.Char(1)
   user           User?           @relation(fields: [userId], references: [id])
   userId         Int?
+  code      String   @unique
   requestAmounts RequestAmount[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
