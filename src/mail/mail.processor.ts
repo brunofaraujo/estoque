@@ -1,8 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import {
-  OnQueueCompleted,
-  OnQueueError,
-  OnQueueFailed,
   Process,
   Processor,
 } from '@nestjs/bull';
@@ -19,7 +16,7 @@ export class MailProcessor {
 
     await this.mailerService.sendMail({
       ...data,
-      subject: 'Request code',
+      subject: '[Código de validação] Solicitação de material',
       template: 'request',
       context: {
         requestCode: data.code,
@@ -27,18 +24,18 @@ export class MailProcessor {
     });
   }
 
-  @OnQueueError()
-  onError(job: Job) {
-    console.error('Queue error!');
-  }
+  // @OnQueueError()
+  // onError(job: Job) {
+  //   console.error('Queue error!');
+  // }
 
-  @OnQueueCompleted()
-  onCompleted(job: Job) {
-    console.log('Queue added!');
-  }
+  // @OnQueueCompleted()
+  // onCompleted(job: Job) {
+  //   console.log('Queue added!');
+  // }
 
-  @OnQueueFailed()
-  onFailed(job: Job) {
-    console.error('Queue failed.');
-  }
+  // @OnQueueFailed()
+  // onFailed(job: Job) {
+  //   console.error('Queue failed.');
+  // }
 }
