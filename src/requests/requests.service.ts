@@ -139,7 +139,10 @@ export class RequestsService {
       });
       if (request && request.code === code) {
         request.status = RequestStatusEnum.Confirmed;
-        await this.prisma.request.update({where: {id: request.id}, data: {status: RequestStatusEnum.Confirmed}})
+        await this.prisma.request.update({
+          where: { id: request.id },
+          data: { status: RequestStatusEnum.Confirmed },
+        });
         return { id: request.id, updatedAt: request.updatedAt };
       }
       throw new BadRequestException('Invalid request code');

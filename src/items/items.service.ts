@@ -232,14 +232,14 @@ export class ItemsService {
     }
   }
 
-  async restoreItem (id: number) {
+  async restoreItem(id: number) {
     try {
       return await this.prisma.item.update({
-       where: {id, AND: {deleted: true}},
-       data: {deleted: false, supply: {update: {deleted: false}}}
-      })
+        where: { id, AND: { deleted: true } },
+        data: { deleted: false, supply: { update: { deleted: false } } },
+      });
     } catch (e) {
-      throw new BadRequestException(e)
+      throw new BadRequestException(e);
     }
   }
 }

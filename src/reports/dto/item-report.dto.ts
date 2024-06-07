@@ -1,6 +1,6 @@
-import { IsInt } from "class-validator";
+import { IsInt } from 'class-validator';
 
 export class ItemReportDto {
-    @IsInt()
-    itemId: number;
+  @IsInt()
+  itemId: number;
 }

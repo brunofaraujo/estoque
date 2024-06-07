@@ -8,6 +8,6 @@ import { SimpleFaker } from '@faker-js/faker';
 @Module({
   controllers: [RequestsController],
   providers: [RequestsService, SimpleFaker],
-  imports: [PrismaModule, MailModule]
+  imports: [PrismaModule, MailModule],
 })
 export class RequestsModule {}

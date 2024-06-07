@@ -46,7 +46,7 @@ import { MailModule } from './mail/mail.module';
         },
       },
       defaults: {
-        from: '"SCE - Escola SESI Prata" <brunofadev@gmail.com>',
+        from: process.env.MAIL_FROM, //'"SCE - Escola SESI Prata" <brunofadev@gmail.com>',
       },
     }),
     UsersModule,

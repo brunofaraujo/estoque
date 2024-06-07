@@ -31,7 +31,7 @@ export class ItemsController {
   }
 
   @Post('restore')
-  restoreItem(@Body("itemId") id: number) {
+  restoreItem(@Body('itemId') id: number) {
     return this.itemsService.restoreItem(id);
   }
 

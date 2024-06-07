@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+// import { CreateReportDto } from './dto/create-report.dto';
+// import { UpdateReportDto } from './dto/update-report.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryReportDto } from './dto/category-report.dto';
 import { EmployeeReportDto } from './dto/employee-report.dto';
@@ -10,25 +10,25 @@ import { ItemReportDto } from './dto/item-report.dto';
 export class ReportsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createReportDto: CreateReportDto) {
-    return 'This action adds a new report';
-  }
+  // create(createReportDto: CreateReportDto) {
+  //   return 'This action adds a new report';
+  // }
 
-  findAll() {
-    return `This action returns all reports`;
-  }
+  // findAll() {
+  //   return `This action returns all reports`;
+  // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} report`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} report`;
+  // }
 
-  update(id: number, updateReportDto: UpdateReportDto) {
-    return `This action updates a #${id} report`;
-  }
+  // update(id: number, updateReportDto: UpdateReportDto) {
+  //   return `This action updates a #${id} report`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} report`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} report`;
+  // }
 
   async getCategories(categoryReport: CategoryReportDto) {
     try {
